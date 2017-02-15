@@ -89,5 +89,10 @@ func postVPlan(url, data, auth string) {
 		return
 	}
 
+	if resp.StatusCode != 200 {
+		log.Fatal("Vertretungsplan konnte nicht hochgeladen werden!")
+		return
+	}
+
 	defer resp.Body.Close()
 }
