@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/fsnotify/fsnotify"
 )
@@ -19,6 +20,14 @@ func main() {
 	var url = flag.String("url", "", "The URL to post the VPlan data to")
 	var folder = flag.String("folder", "", "The folder to watch")
 	var auth = flag.String("auth", "", "The authentication secret")
+
+	// Log to file
+	f, err := os.OpenFile("logs.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatal("error opening log file")
+	}
+	defer f.Close()
+	log.SetOutput(f)
 
 	flag.Parse()
 	log.Println(*url, *folder)
@@ -93,6 +102,8 @@ func postVPlan(url, data, auth string) {
 		log.Fatal("Vertretungsplan konnte nicht hochgeladen werden!")
 		return
 	}
+
+	log.Println("Neuer Vertretungsplan hochgeladen")
 
 	defer resp.Body.Close()
 }
